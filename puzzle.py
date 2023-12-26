@@ -1,6 +1,7 @@
 import pygame as py
 from collections import deque
 from coord import Coord
+import copy
 
 class Puzzle:
 
@@ -11,6 +12,7 @@ class Puzzle:
 
         self.endCoord = Coord(0, 0)
         self.end = False
+        self.gameOver = False
 
         self.wallStr = '#'
         self.openStr = 'O'
@@ -38,8 +40,9 @@ class Puzzle:
             print()
 
     def fillBacktrace(self):
-        self.backtrace = self.grid
+        self.backtrace = copy.deepcopy(self.grid)
         self.end = False
+        self.queue = deque()
 
         self.discover(self.pCoord, '*')
 
@@ -60,10 +63,10 @@ class Puzzle:
 
         if (crtMap == self.openStr and crtBt == self.openStr) or crtBt == self.pigStr:
             self.queue.append(coord)
-            crtBt = self.backtrace[coord.getRow()][coord.getCol()] = char
+            self.backtrace[coord.getRow()][coord.getCol()] = char
 
         elif crtMap == self.exitStr:
-            crtBt = self.backtrace[coord.getRow()][coord.getCol()] = char
+            self.backtrace[coord.getRow()][coord.getCol()] = char
             self.end = True
             self.endCoord = coord
 
@@ -83,3 +86,24 @@ class Puzzle:
             char = self.backtrace[nextCoord.getRow()][nextCoord.getCol()]
 
         return prevCoord
+    
+    def isGameOver(self):
+        return self.gameOver
+    
+    
+    def pigNextMove(self):
+        self.fillBacktrace()
+        next = self.getNextMove()
+        self.move(next)
+
+        self.printGrid()
+
+    def move(self, c):
+        nextChar = self.grid[c.getRow()][c.getCol()]
+
+        self.grid[c.getRow()][c.getCol()] = self.pigStr
+        self.grid[self.pCoord.getRow()][self.pCoord.getCol()] = self.openStr
+        self.pCoord = c
+
+        if (nextChar == self.exitStr):
+            self.gameOver = True

@@ -1,15 +1,16 @@
 import pygame as py
 from puzzle import Puzzle
 from coord import Coord
+import time
 
 
 nRows, nCols = 7, 7
 
 puzz = Puzzle(nRows, nCols)
 
-puzz.fillBacktrace()
-puzz.printGrid()
+while (puzz.isGameOver() != True):
+    print("--------")
+    time.sleep(2)
+    puzz.pigNextMove()
 
-nextCoord = puzz.getNextMove()
-print(nextCoord.getRow())
-print(nextCoord.getCol())
+print("game ove")
