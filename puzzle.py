@@ -66,3 +66,20 @@ class Puzzle:
             crtBt = self.backtrace[coord.getRow()][coord.getCol()] = char
             self.end = True
             self.endCoord = coord
+
+
+    def getNextMove(self):
+
+        prevCoord = self.endCoord
+        pchar = self.backtrace[prevCoord.getRow()][prevCoord.getCol()]
+
+        nextCoord = prevCoord.getNext(pchar)
+        char = self.backtrace[nextCoord.getRow()][nextCoord.getCol()]
+
+        while char != '*':
+            prevCoord = nextCoord
+            nextCoord = nextCoord.getNext(char)
+
+            char = self.backtrace[nextCoord.getRow()][nextCoord.getCol()]
+
+        return prevCoord
