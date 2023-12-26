@@ -3,9 +3,7 @@ import pygame as py
 class Cube:
 
     def __init__(self, x, y, size, type):
-        self.x = x
-        self.y = y
-        self.size = size
+        self.rect = py.Rect(x, y, size, size)
         self.type = type
         
         if type == "pig":
@@ -18,13 +16,14 @@ class Cube:
             self.color = (100, 100, 100)
 
     def draw(self, win):
-        py.draw.rect(win, self.color, (self.x, self.y, self.size, self.size))
+        if self.type != "exit":
+            py.draw.rect(win, self.color, self.rect)
 
     def isPressed(self, xCor, yCor):
+        rect2 = py.Rect(xCor, yCor, 1, 1)
 
         if self.type == "open":
-            if (self.x <= xCor and self.x + self.size >= xCor and
-                self.y <= yCor and self.y + self.size >= yCor):
+            if py.Rect.colliderect(self.rect, rect2):
                 return True
         
         return False
